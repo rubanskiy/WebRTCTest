@@ -66,12 +66,12 @@ public class WebSocketRTCClient implements AppRTCClient, WebSocketChannelEvents 
   // Asynchronously connect to an AppRTC room URL using supplied connection
   // parameters, retrieves room parameters and connect to WebSocket server.
   @Override
-  public void connectToRoom(RoomConnectionParameters connectionParameters) {
+  public void connectToRoom(final RoomConnectionParameters connectionParameters) {
     this.connectionParameters = connectionParameters;
     handler.post(new Runnable() {
       @Override
       public void run() {
-        connectToRoomInternal();
+        connectToRoomInternal(connectionParameters.roomId);
       }
     });
   }
@@ -88,7 +88,7 @@ public class WebSocketRTCClient implements AppRTCClient, WebSocketChannelEvents 
   }
 
   // Connects to room - function runs on a local looper thread.
-  private void connectToRoomInternal() {
+  private void connectToRoomInternal(String roomId) {
 //    String connectionUrl = getConnectionUrl(connectionParameters);
 //    Log.d(TAG, "Connect to room: " + connectionUrl);
 //    roomState = ConnectionState.NEW;
@@ -113,7 +113,7 @@ public class WebSocketRTCClient implements AppRTCClient, WebSocketChannelEvents 
 //
 //    new RoomParametersFetcher(connectionUrl, null, callbacks).makeRequest();
     wsClient.connect("", "");
-    wsClient.register("", "");
+    wsClient.register(roomId, "");
   }
 
   // Disconnect from room and send bye messages - runs on a local looper thread.

@@ -114,7 +114,7 @@ public class WebSocketChannelClient {
               "  \"command\" : \"getOffer\",\n" +
               "  \"streamInfo\" : {\n" +
               "    \"applicationName\":\"webrtc\",\n" +
-              "    \"streamName\" : \"AlexTest5\",\n" +
+              "    \"streamName\" : \"" + roomID + "\",\n" +
               "    \"sessionId\" : \"[empty]\"\n" +
               "  },\n" +
               "  \"userData\" : {\n" +

@@ -1,13 +1,3 @@
-/*
- *  Copyright 2014 The WebRTC Project Authors. All rights reserved.
- *
- *  Use of this source code is governed by a BSD-style license
- *  that can be found in the LICENSE file in the root of the source
- *  tree. An additional intellectual property rights grant can be found
- *  in the file PATENTS.  All contributing project authors may
- *  be found in the AUTHORS file in the root of the source tree.
- */
-
 package org.appspot.apprtc;
 
 import android.app.Activity;
@@ -29,6 +19,7 @@ import android.view.inputmethod.EditorInfo;
 import android.webkit.URLUtil;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -45,19 +36,16 @@ import de.tavendo.autobahn.WebSocket;
 import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;
 
-/**
- * Handles the initial setup where the user selects which room to join.
- */
 public class ConnectActivity extends Activity {
+
   private static final String TAG = "ConnectActivity";
+
   private static final int CONNECTION_REQUEST = 1;
   private static final int REMOVE_FAVORITE_INDEX = 0;
   private static boolean commandLineRun = false;
 
-  private ImageButton connectButton;
-  private ImageButton addFavoriteButton;
+  private Button connectButton;
   private EditText roomEditText;
-  private ListView roomListView;
   private SharedPreferences sharedPref;
   private String keyprefVideoCallEnabled;
   private String keyprefScreencapture;
@@ -88,7 +76,6 @@ public class ConnectActivity extends Activity {
   private String keyprefRoom;
   private String keyprefRoomList;
   private ArrayList<String> roomList;
-  private ArrayAdapter<String> adapter;
   private String keyprefEnableDataChannel;
   private String keyprefOrdered;
   private String keyprefMaxRetransmitTimeMs;
@@ -130,7 +117,6 @@ public class ConnectActivity extends Activity {
     keyprefDisplayHud = getString(R.string.pref_displayhud_key);
     keyprefTracing = getString(R.string.pref_tracing_key);
     keyprefRoomServerUrl = getString(R.string.pref_room_server_url_key);
-//    keyprefRoomServerUrl = "wss://213-57-1-141.vidnt.com:5443";//webrtc-session.json
     keyprefRoom = getString(R.string.pref_room_key);
     keyprefRoomList = getString(R.string.pref_room_list_key);
     keyprefEnableDataChannel = getString(R.string.pref_enable_datachannel_key);
@@ -144,26 +130,9 @@ public class ConnectActivity extends Activity {
     setContentView(R.layout.activity_connect);
 
     roomEditText = (EditText) findViewById(R.id.room_edittext);
-    roomEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-      @Override
-      public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-        if (i == EditorInfo.IME_ACTION_DONE) {
-          addFavoriteButton.performClick();
-          return true;
-        }
-        return false;
-      }
-    });
-    roomEditText.requestFocus();
 
-    roomListView = (ListView) findViewById(R.id.room_listview);
-    roomListView.setEmptyView(findViewById(android.R.id.empty));
-    roomListView.setOnItemClickListener(roomListClickListener);
-    registerForContextMenu(roomListView);
-    connectButton = (ImageButton) findViewById(R.id.connect_button);
+    connectButton = (Button) findViewById(R.id.connect_button);
     connectButton.setOnClickListener(connectListener);
-    addFavoriteButton = (ImageButton) findViewById(R.id.add_favorite_button);
-    addFavoriteButton.setOnClickListener(addFavoriteListener);
 
     // If an implicit VIEW intent is launching the app, go directly to that URL.
     final Intent intent = getIntent();
@@ -184,26 +153,11 @@ public class ConnectActivity extends Activity {
   }
 
   @Override
-  public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-    if (v.getId() == R.id.room_listview) {
-      AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-      menu.setHeaderTitle(roomList.get(info.position));
-      String[] menuItems = getResources().getStringArray(R.array.roomListContextMenu);
-      for (int i = 0; i < menuItems.length; i++) {
-        menu.add(Menu.NONE, i, i, menuItems[i]);
-      }
-    } else {
-      super.onCreateContextMenu(menu, v, menuInfo);
-    }
-  }
-
-  @Override
   public boolean onContextItemSelected(MenuItem item) {
     if (item.getItemId() == REMOVE_FAVORITE_INDEX) {
       AdapterView.AdapterContextMenuInfo info =
           (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
       roomList.remove(info.position);
-      adapter.notifyDataSetChanged();
       return true;
     }
 
@@ -216,9 +170,6 @@ public class ConnectActivity extends Activity {
     if (item.getItemId() == R.id.action_settings) {
       Intent intent = new Intent(this, SettingsActivity.class);
       startActivity(intent);
-      return true;
-    } else if (item.getItemId() == R.id.action_loopback) {
-      connectToRoom(null, false, true, false, 0);
       return true;
     } else {
       return super.onOptionsItemSelected(item);
@@ -252,12 +203,6 @@ public class ConnectActivity extends Activity {
       } catch (JSONException e) {
         Log.e(TAG, "Failed to load room list: " + e.toString());
       }
-    }
-    adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, roomList);
-    roomListView.setAdapter(adapter);
-    if (adapter.getCount() > 0) {
-      roomListView.requestFocus();
-      roomListView.setItemChecked(0, true);
     }
   }
 
@@ -614,16 +559,6 @@ public class ConnectActivity extends Activity {
         }
       };
 
-  private final OnClickListener addFavoriteListener = new OnClickListener() {
-    @Override
-    public void onClick(View view) {
-      String newRoom = roomEditText.getText().toString();
-      if (newRoom.length() > 0 && !roomList.contains(newRoom)) {
-        adapter.add(newRoom);
-        adapter.notifyDataSetChanged();
-      }
-    }
-  };
 
   private final OnClickListener connectListener = new OnClickListener() {
     @Override
