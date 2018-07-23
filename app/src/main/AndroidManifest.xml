@@ -21,8 +21,12 @@
       android:allowBackup="false">
 
     <activity
-        android:name="ConnectActivity"
-        android:windowSoftInputMode="adjustPan">
+        android:name="CallActivity"
+        android:label="@string/app_name"
+        android:screenOrientation="landscape"
+        android:configChanges="orientation|screenSize"
+        android:theme="@style/CallActivityTheme">
+
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
@@ -35,24 +39,14 @@
         <category android:name="android.intent.category.BROWSABLE"/>
 
         <data
-            android:scheme="https"
-            android:host="appr.tc"/>
+          android:scheme="https"
+          android:host="appr.tc"/>
         <data
-            android:scheme="http"
-            android:host="appr.tc"/>
+          android:scheme="http"
+          android:host="appr.tc"/>
       </intent-filter>
+
     </activity>
-
-    <activity
-        android:name="SettingsActivity"
-        android:label="@string/settings_name"/>
-
-    <activity
-        android:name="CallActivity"
-        android:label="@string/app_name"
-        android:screenOrientation="fullUser"
-        android:configChanges="orientation|screenSize"
-        android:theme="@style/CallActivityTheme"/>
 
   </application>
 
