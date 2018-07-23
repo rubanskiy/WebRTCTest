@@ -151,7 +151,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
   private SignalingParameters signalingParameters;
   private AppRTCAudioManager audioManager = null;
   private EglBase rootEglBase;
-  private SurfaceViewRenderer pipRenderer;
+//  private SurfaceViewRenderer pipRenderer;
   private SurfaceViewRenderer fullscreenRenderer;
   private VideoFileRenderer videoFileRenderer;
   private final List<VideoRenderer.Callbacks> remoteRenderers =
@@ -194,16 +194,16 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     signalingParameters = null;
 
     // Create UI controls.
-    pipRenderer = (SurfaceViewRenderer) findViewById(R.id.pip_video_view);
+//    pipRenderer = (SurfaceViewRenderer) findViewById(R.id.pip_video_view);
     fullscreenRenderer = (SurfaceViewRenderer) findViewById(R.id.fullscreen_video_view);
 
     // Swap feeds on pip view click.
-    pipRenderer.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        setSwappedFeeds(!isSwappedFeeds);
-      }
-    });
+//    pipRenderer.setOnClickListener(new View.OnClickListener() {
+//      @Override
+//      public void onClick(View view) {
+//        setSwappedFeeds(!isSwappedFeeds);
+//      }
+//    });
 
     remoteRenderers.add(remoteProxyRenderer);
 
@@ -211,8 +211,8 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
 
     // Create video renderers.
     rootEglBase = EglBase.create();
-    pipRenderer.init(rootEglBase.getEglBaseContext(), null);
-    pipRenderer.setScalingType(ScalingType.SCALE_ASPECT_FIT);
+//    pipRenderer.init(rootEglBase.getEglBaseContext(), null);
+//    pipRenderer.setScalingType(ScalingType.SCALE_ASPECT_FIT);
     String saveRemoteVideoToFile = intent.getStringExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE);
 
     // When saveRemoteVideoToFile is set we save the video from the remote to a file.
@@ -231,8 +231,8 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     fullscreenRenderer.init(rootEglBase.getEglBaseContext(), null);
     fullscreenRenderer.setScalingType(ScalingType.SCALE_ASPECT_FILL);
 
-    pipRenderer.setZOrderMediaOverlay(true);
-    pipRenderer.setEnableHardwareScaler(true /* enabled */);
+//    pipRenderer.setZOrderMediaOverlay(true);
+//    pipRenderer.setEnableHardwareScaler(true /* enabled */);
     fullscreenRenderer.setEnableHardwareScaler(true /* enabled */);
     // Start with local feed in fullscreen and swap it to the pip when the call is connected.
     setSwappedFeeds(true /* isSwappedFeeds */);
@@ -568,10 +568,10 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
       peerConnectionClient.close();
       peerConnectionClient = null;
     }
-    if (pipRenderer != null) {
-      pipRenderer.release();
-      pipRenderer = null;
-    }
+//    if (pipRenderer != null) {
+//      pipRenderer.release();
+//      pipRenderer = null;
+//    }
     if (videoFileRenderer != null) {
       videoFileRenderer.release();
       videoFileRenderer = null;
@@ -617,11 +617,11 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
   // Log |msg| and Toast about it.
   private void logAndToast(String msg) {
     Log.d(TAG, msg);
-    if (logToast != null) {
-      logToast.cancel();
-    }
-    logToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
-    logToast.show();
+//    if (logToast != null) {
+//      logToast.cancel();
+//    }
+//    logToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+//    logToast.show();
   }
 
   private void reportError(final String description) {
@@ -670,10 +670,10 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
   private void setSwappedFeeds(boolean isSwappedFeeds) {
     Logging.d(TAG, "setSwappedFeeds: " + isSwappedFeeds);
     this.isSwappedFeeds = isSwappedFeeds;
-    localProxyRenderer.setTarget(isSwappedFeeds ? fullscreenRenderer : pipRenderer);
-    remoteProxyRenderer.setTarget(isSwappedFeeds ? pipRenderer : fullscreenRenderer);
-    fullscreenRenderer.setMirror(isSwappedFeeds);
-    pipRenderer.setMirror(!isSwappedFeeds);
+//    localProxyRenderer.setTarget(isSwappedFeeds ? fullscreenRenderer : pipRenderer);
+    remoteProxyRenderer.setTarget(/*isSwappedFeeds ? pipRenderer : */fullscreenRenderer);
+//    fullscreenRenderer.setMirror(isSwappedFeeds);
+//    pipRenderer.setMirror(!isSwappedFeeds);
   }
 
   // -----Implementation of AppRTCClient.AppRTCSignalingEvents ---------------
